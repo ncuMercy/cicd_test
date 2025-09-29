@@ -13,4 +13,6 @@ steps:
   id: Deploy to GCS
   args: ['rsync', '-r', './dist', 'gs://task-manage']
 
+options:
+  logging: CLOUD_LOGGING_ONLY
 timeout: '600s'
