@@ -19,11 +19,13 @@ steps:
   env:
     - VITE_BUCKET_NAME=/${_BUCKET_NAME}-stage/
   args: ['run', 'build']
+  waitFor: ['Run Unit Tests']
 
 - name: 'gcr.io/cloud-builders/gsutil'
   id: Deploy to Staging
   dir: 'frontend'
   args: ['rsync', '-r', './dist', 'gs://${_BUCKET_NAME}-stage']
+  waitFor: ['Run Build Script']
 
 - name: mcr.microsoft.com/playwright:v1.55.0-noble
   entrypoint: bash
@@ -34,11 +36,13 @@ steps:
       npm ci
       npx playwright install chromium
       STAGING_HOST=${_BUCKET_NAME}-stage.storage.googleapis.com npx playwright test
+  waitFor: ['Deploy to Staging']
 
 - name: 'gcr.io/cloud-builders/gsutil'
   id: Deploy to GCS
   dir: 'frontend'
   args: ['rsync', '-r', './dist', 'gs://${_BUCKET_NAME}-production']
+  waitFor: ['Run Playwright Tests']
 
 options:
   logging: CLOUD_LOGGING_ONLY
