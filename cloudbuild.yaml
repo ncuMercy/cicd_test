@@ -3,13 +3,24 @@ steps:
   id: Install Dependencies
   entrypoint: npm
   dir: 'frontend'
-  args: ['install']
+  args: ['ci']
 
 - name: 'node:22'
   id: Run Build Script
   entrypoint: npm
   dir: 'frontend'
+  env:
+    - VITE_BUCKET_NAME=/${_BUCKET_NAME}/
   args: ['run', 'build']
+
+- name: mcr.microsoft.com/playwright:v1.55.0-noble
+  entrypoint: bash
+  args:
+    - -c
+    - |
+      npm ci
+      npx playwright install chromium
+      npm run test:e2e
 
 - name: 'gcr.io/cloud-builders/gsutil'
   id: Deploy to GCS
