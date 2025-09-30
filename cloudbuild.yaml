@@ -2,15 +2,18 @@ steps:
 - name: 'node:22' 
   id: Install Dependencies
   entrypoint: npm
+  dir: 'frontend'
   args: ['install']
 
 - name: 'node:22'
   id: Run Build Script
   entrypoint: npm
+  dir: 'frontend'
   args: ['run', 'build']
 
 - name: 'gcr.io/cloud-builders/gsutil'
   id: Deploy to GCS
+  dir: 'frontend'
   args: ['rsync', '-r', './dist', 'gs://task-manage']
 
 options:
