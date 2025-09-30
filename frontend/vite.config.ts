@@ -8,6 +8,7 @@ const __dirname = dirname(__filename);
 
 // https://vite.dev/config/
 export default defineConfig({
+  base:'/task-manage/',
   plugins: [react()],
   server: {
     host: '0.0.0.0',
