@@ -28,7 +28,7 @@ test.describe('Task CRUD Operations', () => {
     const taskElement = page.getByTestId('task-item').first();
     await expect(taskElement.getByText('Buy groceries')).toBeVisible();
     await expect(taskElement.getByText('Milk, eggs, bread')).toBeVisible();
-    await expect(taskElement.getByText('HIGH')).toBeVisible({ exact: true });
+    await expect(taskElement.getByText('HIGH')).toBeVisible({ visible: true });
     await expect(taskElement.locator('[data-testid="toggle-task-status"]')).toBeVisible(); // Default TODO circle icon
   });
 
