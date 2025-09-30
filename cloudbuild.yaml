@@ -14,7 +14,7 @@ steps:
 - name: 'gcr.io/cloud-builders/gsutil'
   id: Deploy to GCS
   dir: 'frontend'
-  args: ['rsync', '-r', './dist', 'gs://task-manage']
+  args: ['rsync', '-r', './dist', 'gs://${_BUCKET_NAME}']
 
 options:
   logging: CLOUD_LOGGING_ONLY
