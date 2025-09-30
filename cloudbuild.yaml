@@ -15,6 +15,7 @@ steps:
 
 - name: mcr.microsoft.com/playwright:v1.55.0-noble
   entrypoint: bash
+  dir: 'frontend'
   args:
     - -c
     - |
