@@ -36,7 +36,7 @@ steps:
     - |
       npm ci
       npx playwright install chromium
-      STAGING_HOST=${_BUCKET_NAME}-stage.storage.googleapis.com npx playwright test
+      STAGING_HOST=https://storage.googleapis.com/${_BUCKET_NAME}-stage npx playwright test
   waitFor: ['Deploy to Staging']
 
 - name: 'gcr.io/cloud-builders/gsutil'
