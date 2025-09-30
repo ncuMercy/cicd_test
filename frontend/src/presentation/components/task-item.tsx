@@ -4,7 +4,7 @@ import { TaskStatus } from "@/domain/enums/task-status";
 import type { UpdateTaskRequest } from "@/domain/interfaces/update-task-request";
 import { Calendar, CheckCircle, Circle, Trash2 } from "lucide-react";
 
-export const TaskItem: React.FC<{
+const TaskItem: React.FC<{
   task: Task;
   onUpdate: (request: UpdateTaskRequest) => void;
   onDelete: (id: string) => void;
@@ -98,3 +98,5 @@ export const TaskItem: React.FC<{
     </div>
   );
 };
+
+export default TaskItem;

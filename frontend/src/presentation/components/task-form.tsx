@@ -2,11 +2,12 @@ import { Priority } from "@/domain/enums/priority";
 import type { CreateTaskRequest } from "@/domain/interfaces/create-task-request";
 import { useState } from "react";
 
-
-export const TaskForm: React.FC<{
+export interface TaskFormProps {
   onSubmit: (task: CreateTaskRequest) => void;
   onCancel: () => void;
-}> = ({ onSubmit, onCancel }) => {
+}
+
+const TaskForm: React.FC<TaskFormProps> = ({ onSubmit, onCancel }) => {
   const [formData, setFormData] = useState<CreateTaskRequest>({
     title: "",
     description: "",
@@ -108,3 +109,5 @@ export const TaskForm: React.FC<{
     </div>
   );
 };
+
+export default TaskForm;

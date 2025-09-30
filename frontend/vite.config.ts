@@ -25,6 +25,17 @@ export default defineConfig(({ mode }) => {
       alias: {
         '@': path.resolve(__dirname, './src'),
       }
+    },
+    test: {
+      environment: 'jsdom',
+      setupFiles: ['./src/setupTests.ts'],
+      css: false,
+      globals: true,
+      include: ['src/tests/unit/*.{test,spec}.{ts,tsx}'],
+      coverage: {
+        provider: 'v8',
+        reporter: ['text', 'html'],
+      },
     }
   }
 })

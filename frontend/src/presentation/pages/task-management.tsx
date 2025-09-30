@@ -4,8 +4,8 @@ import {
   Plus
 } from "lucide-react";
 import type { TaskFilter } from "@/domain/interfaces/task-filter";
-import { TaskForm } from "../components/task-form";
-import { TaskItem } from "../components/task-item";
+import TaskForm from "../components/task-form";
+import TaskItem from "../components/task-item";
 import { Priority } from "@/domain/enums/priority";
 import { TaskStatus } from "@/domain/enums/task-status";
 import { TaskStats } from "../components/task-status";
