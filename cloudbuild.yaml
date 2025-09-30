@@ -33,7 +33,7 @@ steps:
     - |
       npm ci
       npx playwright install chromium
-      npm run test:e2e
+      STAGING_HOST=${_BUCKET_NAME}-stage.storage.googleapis.com npx playwright test
 
 - name: 'gcr.io/cloud-builders/gsutil'
   id: Deploy to GCS
