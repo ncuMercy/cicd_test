@@ -46,7 +46,7 @@ steps:
   '-m',
   'setmeta',
   '-h', 'Cache-Control:public, max-age=31536000, immutable', # 1 year cache
-  'gs://${_BUCKET_NAME}-stage/**/*.{css,js,png,jpg,svg,webp,ico}'
+  'gs://${_BUCKET_NAME}-stage/assets/**.{css,js,png,jpg,svg,webp,ico}'
   ]
   waitFor: ['Set HTML Headers']
 
@@ -60,7 +60,7 @@ steps:
       npm ci
       npx playwright install chromium
       PLAYWRIGHT_BASE_URL=https://storage.googleapis.com/${_BUCKET_NAME}-stage/index.html npx playwright test
-  waitFor: ['Deploy to Staging']
+  waitFor: ['Set Assets Headers']
 
 - name: 'gcr.io/cloud-builders/gsutil'
   id: Deploy to GCS
