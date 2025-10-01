@@ -46,7 +46,7 @@ steps:
   '-m',
   'setmeta',
   '-h', 'Cache-Control:public, max-age=31536000, immutable', # 1 year cache
-  'gs://${_BUCKET_NAME}-stage/assets/**.{css,js,png,jpg,svg,webp,ico}'
+  'gs://task-management-stage/asset/*'
   ]
   waitFor: ['Set HTML Headers']
 
