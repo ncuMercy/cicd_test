@@ -27,6 +27,29 @@ steps:
   args: ['rsync', '-r', './dist', 'gs://${_BUCKET_NAME}-stage']
   waitFor: ['Run Build Script']
 
+- name: 'gcr.io/cloud-builders/gsutil'
+  id: Set HTML Headers
+  dir: 'frontend'
+  args: [
+  '-m', # Execute operations in parallel
+  'setmeta',
+  '-h', 'Content-Type:text/html',
+  '-h', 'Cache-Control:public, max-age=300, must-revalidate', # 5 minutes cache
+  'gs://${_BUCKET_NAME}-stage/**.html'
+  ]
+  waitFor: ['Deploy to Staging']
+
+- name: 'gcr.io/cloud-builders/gsutil'
+  id: Set Assets Headers
+  dir: 'frontend'
+  args: [
+  '-m',
+  'setmeta',
+  '-h', 'Cache-Control:public, max-age=31536000, immutable', # 1 year cache
+  'gs://${_BUCKET_NAME}-stage/**/*.{css,js,png,jpg,svg,webp,ico}'
+  ]
+  waitFor: ['Set HTML Headers']
+
 - name: mcr.microsoft.com/playwright:v1.55.0-noble
   entrypoint: bash
   dir: 'frontend'
