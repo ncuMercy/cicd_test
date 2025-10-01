@@ -59,7 +59,7 @@ steps:
     - |
       npm ci
       npx playwright install chromium
-      PLAYWRIGHT_BASE_URL=https://${_BUCKET_NAME}-stage.storage.googleapis.com/index.html npx playwright test
+      PLAYWRIGHT_BASE_URL=https://${_BUCKET_NAME}-stage.storage.googleapis.com npx playwright test
   waitFor: ['Set Assets Headers']
 
 - name: 'gcr.io/cloud-builders/gsutil'
