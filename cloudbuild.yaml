@@ -54,12 +54,14 @@ steps:
   entrypoint: bash
   dir: 'frontend'
   id: Run Playwright Tests
+  env:
+    - PLAYWRIGHT_BASE_URL=https://storage.googleapis.com/${_BUCKET_NAME}-stage
   args:
     - -c
     - |
       npm ci
       npx playwright install chromium
-      PLAYWRIGHT_BASE_URL=https://${_BUCKET_NAME}-stage.storage.googleapis.com npx playwright test
+      npx playwright test
   waitFor: ['Set Assets Headers']
 
 - name: 'gcr.io/cloud-builders/gsutil'
