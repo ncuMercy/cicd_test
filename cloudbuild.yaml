@@ -17,7 +17,7 @@ steps:
   entrypoint: npm
   dir: 'frontend'
   env:
-    - VITE_BUCKET_NAME=/${_BUCKET_NAME}-stage/
+    - VITE_BUCKET_NAME=${_BUCKET_NAME}-stage
   args: ['run', 'build']
   waitFor: ['Run Unit Tests']
 
@@ -55,7 +55,7 @@ steps:
   dir: 'frontend'
   id: Run Playwright Tests
   env:
-    - PLAYWRIGHT_BASE_URL=https://storage.googleapis.com/${_BUCKET_NAME}-stage
+    - PLAYWRIGHT_BASE_URL=https://storage.googleapis.com
   args:
     - -c
     - |

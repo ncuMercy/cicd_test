@@ -1,7 +1,8 @@
 import { test, expect } from '@playwright/test';
 
-const BASE_URL = process.env.PLAYWRIGHT_BASE_URL ? '/index.html' : 'http://localhost:3000';
-// Setup: Clear localStorage before each test
+const BUCKET_NAME = process.env.VITE_BUCKET_NAME || 'error';
+const BASE_URL = process.env.PLAYWRIGHT_BASE_URL ? `/${BUCKET_NAME}/index.html` : 'http://localhost:3000';
+
 test.beforeEach(async ({ page }) => {
   await page.goto(BASE_URL);
   await page.evaluate(() => localStorage.clear());

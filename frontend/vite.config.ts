@@ -11,7 +11,6 @@ export default defineConfig(({ mode }) => {
   const env = loadEnv(`${process.cwd()}/.env`, '')
 
   return {
-    base: env.VITE_BUCKET_NAME,
     plugins: [react()],
     server: {
       host: '0.0.0.0',
