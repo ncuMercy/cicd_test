@@ -2,7 +2,7 @@ import { test, expect } from '@playwright/test';
 
 // Setup: Clear localStorage before each test
 test.beforeEach(async ({ page }) => {
-    await page.goto('http://localhost:3000/task-manage/');
+  await page.goto('/');
   await page.evaluate(() => localStorage.clear());
   await page.reload();
 });
