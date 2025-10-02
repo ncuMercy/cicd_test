@@ -46,22 +46,49 @@ steps:
 - name: mcr.microsoft.com/playwright:v1.55.0-noble
   entrypoint: bash
   dir: 'frontend'
-  id: 'SEND_NOTIFICATION_EMAIL'
+  id: 'E2E_TESTS'
   env:
     - PLAYWRIGHT_BASE_URL=https://storage.googleapis.com
     - VITE_BUCKET_NAME=${_BUCKET_NAME}-stage
   allowFailure: true
   args:
+    - -c
+    - |
+      npm ci
+      npx playwright install chromium
+      npx playwright test --reporter=json,html
+  waitFor: ['DEPLOY_TO_STAGING']
+
+- name: mcr.microsoft.com/playwright:v1.55.0-noble
+  entrypoint: bash
+  dir: 'frontend'
+  id: 'SEND_NOTIFICATION_EMAIL'
+  allowFailure: true
+  args:
     - '-c'
     - |
-      if [ -f "frontend/test-results.json" ] || [ -d "frontend/playwright-report" ]; then
-        E2E_STATUS="PASSED"
-        EMOJI="✅"
+      if [ -f "test-results.json" ]; then
+        # Check if any tests failed in the JSON results
+        FAILED_COUNT=$(jq '[.suites[].specs[].tests[].results[] | select(.status=="failed")] | length' test-results.json)
+        if [ "$FAILED_COUNT" -eq 0 ]; then
+          E2E_STATUS="PASSED"
+          EMOJI="✅"
+        else
+          E2E_STATUS="FAILED"
+          EMOJI="❌"
+        fi
+        
+        # Get test statistics
+        TOTAL_TESTS=$(jq '.suites[].specs[] | length' test-results.json | awk '{sum+=$1} END {print sum}')
+        PASSED_TESTS=$(jq '[.suites[].specs[].tests[].results[] | select(.status=="passed")] | length' test-results.json)
       else
-        E2E_STATUS="FAILED" 
+        E2E_STATUS="FAILED"
         EMOJI="❌"
+        TOTAL_TESTS=0
+        PASSED_TESTS=0
+        FAILED_COUNT=0
       fi
-
+      
       EMAIL_CONTENT=$(cat <<EOF
       From: ${_GMAIL_SENDER}
       To: ${_NOTIFICATION_EMAIL}
@@ -91,7 +118,7 @@ steps:
         -d "{\"raw\": \"$$ENCODED_EMAIL\"}"
       
       echo "E2E test results notification sent!"
-  waitFor: ['DEPLOY_TO_STAGING']
+  waitFor: ['E2E_TESTS']
   secretEnv: ['GMAIL_ACCESS_TOKEN']
 
   # Step 8: Deploy to Production
