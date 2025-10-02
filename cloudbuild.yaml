@@ -71,13 +71,12 @@ steps:
   args:
     - '-c'
     - |
-      # Create base64 encoded email
       EMAIL_CONTENT="From: peiyu20240219@gmail.com
       To: peiyu20240219@gmail.com
-      Subject: Build ${BUILD_STATUS} - ${REPO_NAME}
+      Subject: Build $${BUILD_STATUS} - ${REPO_NAME}
       Content-Type: text/html
 
-      <h2>Build ${BUILD_STATUS}</h2>
+      <h2>Build $${BUILD_STATUS}</h2>
       <p><strong>Project:</strong> ${PROJECT_ID}</p>
       <p><strong>Build ID:</strong> ${BUILD_ID}</p>
       <p><strong>Repository:</strong> ${REPO_NAME}</p>
