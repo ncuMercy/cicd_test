@@ -62,18 +62,12 @@ steps:
         EMOJI="❌"
       fi
 
-      if [[ "$${GMAIL_ACCESS_TOKEN}" =~ ^ya29\.[a-zA-Z0-9_-]+ ]]; then
-        echo "✅ Token format looks like a Google OAuth token $${GMAIL_ACCESS_TOKEN}"
-      else
-        echo "❌ Token format doesn't look like a Google OAuth token"
-      fi
-
-      # Create base64 encoded email
-      EMAIL_CONTENT="From: ${_GMAIL_SENDER}
-
+      EMAIL_CONTENT=$(cat <<EOF
+      From: ${_GMAIL_SENDER}
       To: ${_NOTIFICATION_EMAIL}
       Subject: $${EMOJI} E2E Tests $${E2E_STATUS} - ${REPO_NAME}
-      Content-Type: text/html
+      MIME-Version: 1.0
+      Content-Type: text/html; charset="UTF-8"
 
       <h2>$${EMOJI} E2E Test Results - ${REPO_NAME}</h2>
       <p><strong>Status:</strong> $${E2E_STATUS}</p>
@@ -83,7 +77,8 @@ steps:
       <p><strong>Branch:</strong> ${BRANCH_NAME}</p>
       <p><strong>Commit:</strong> ${COMMIT_SHA:0:8}</p>
       <p><a href='https://console.cloud.google.com/cloud-build/builds/${BUILD_ID}?project=${PROJECT_ID}'>View Build Logs</a></p>
-      <p><a href='https://storage.googleapis.com/${_BUCKET_NAME}-stage/index.html'>View Staging Site</a></p>"
+      <p><a href='https://storage.googleapis.com/${_BUCKET_NAME}-stage/index.html'>View Staging Site</a></p>
+      EOF)
 
       # Encode the email in base64 URL-safe format
       ENCODED_EMAIL=$(echo -n "$$EMAIL_CONTENT" | base64 -w 0 | tr '/+' '_-' | tr -d '=')
