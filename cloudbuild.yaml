@@ -6,7 +6,10 @@ steps:
 - name: 'gcr.io/cloud-builders/npm'
   id: 'INSTALL_DEPS'
   dir: 'frontend'
-  args: ['install']
+  args: ['ci']
+  volumes:
+  - name: 'npm-cache'
+    path: '/workspace/frontend/node_modules'
 
   # Step 2: Build Application
 - name: 'gcr.io/cloud-builders/npm'
@@ -16,6 +19,9 @@ steps:
     - VITE_BUCKET_NAME=${_BUCKET_NAME}-stage
   args: ['run', 'build']
   waitFor: ['INSTALL_DEPS']
+  volumes:
+    - name: 'npm-cache'
+      path: '/workspace/frontend/node_modules'
 
   # Step 3: Run Automated Tests
 - name: 'gcr.io/cloud-builders/npm'
@@ -23,6 +29,9 @@ steps:
   dir: 'frontend'
   args: ['run', 'test:unit']
   waitFor: ['INSTALL_DEPS']
+  volumes:
+    - name: 'npm-cache'
+      path: '/workspace/frontend/node_modules'
 
   # ==============================
   # STAGE 2: CONTINUOUS DEPLOYMENT (CD)
@@ -59,3 +68,6 @@ steps:
 timeout: '600s'
 options:
   logging: CLOUD_LOGGING_ONLY
+  volumes:
+    - name: 'npm-cache'
+      path: '/workspace/frontend/node_modules'
