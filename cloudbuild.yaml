@@ -6,13 +6,15 @@ steps:
   # STAGE 1: CONTINUOUS INTEGRATION (CI)
   # ==============================
   # Step 1: Install Dependencies
-- name: 'gcr.io/cloud-builders/npm'
+- name: 'node:22'
+  entrypoint: 'npm'
   id: 'INSTALL_DEPS'
   dir: 'frontend'
   args: ['ci']
 
   # Step 2: Build Application
-- name: 'gcr.io/cloud-builders/npm'
+- name: 'node:22'
+  entrypoint: 'npm'
   id: 'BUILD_APP'
   dir: 'frontend'
   env:
@@ -21,7 +23,8 @@ steps:
   waitFor: ['INSTALL_DEPS']
 
   # Step 3: Run Automated Tests
-- name: 'gcr.io/cloud-builders/npm'
+- name: 'node:22'
+  entrypoint: 'npm'
   id: 'UNIT_TESTS'
   dir: 'frontend'
   args: ['run', 'test:unit']
