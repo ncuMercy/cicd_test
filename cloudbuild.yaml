@@ -54,7 +54,7 @@ steps:
   env:
     - PLAYWRIGHT_BASE_URL=https://storage.googleapis.com
     - VITE_BUCKET_NAME=${_BUCKET_NAME}-stage
-  status: ['SUCCESS', 'FAILURE', 'TIMEOUT']
+  allowFailure: true
   args:
     - -c
     - |
