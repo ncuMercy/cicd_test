@@ -1,10 +1,9 @@
 options:
   logging: CLOUD_LOGGING_ONLY
 
-availableSecrets:
-  secretManager:
-    - versionName: projects/grand-lamp-473611-d6/secrets/gmail-access-token/versions/latest
-      env: 'GMAIL_ACCESS_TOKEN'
+secrets:
+  - versionName: projects/174997059597/secrets/GMAIL_ACCESS_TOKEN/versions/latest
+    secretEnv: 'GMAIL_ACCESS_TOKEN'
 
 steps:
   # ==============================
