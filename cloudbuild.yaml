@@ -83,14 +83,14 @@ steps:
       <p><a href='https://console.cloud.google.com/cloud-build/builds/${BUILD_ID}?project=${PROJECT_ID}'>View Build Logs</a></p>"
 
               # Encode the email in base64 URL-safe format
-              ENCODED_EMAIL=$(echo -n "$EMAIL_CONTENT" | base64 -w 0 | tr '/+' '_-' | tr -d '=')
+              ENCODED_EMAIL=$(echo -n "$$EMAIL_CONTENT" | base64 -w 0 | tr '/+' '_-' | tr -d '=')
 
               # Send via Gmail API
               curl -X POST \
                 "https://gmail.googleapis.com/gmail/v1/users/me/messages/send" \
-                -H "Authorization: Bearer $GMAIL_ACCESS_TOKEN" \
+                -H "Authorization: Bearer $$GMAIL_ACCESS_TOKEN" \
                 -H "Content-Type: application/json" \
-                -d "{\"raw\": \"$ENCODED_EMAIL\"}"
+                -d "{\"raw\": \"$$ENCODED_EMAIL\"}"
               
               echo "Gmail API notification sent!"
   secretEnv: ['GMAIL_ACCESS_TOKEN']
