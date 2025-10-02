@@ -1,10 +1,12 @@
 options:
   logging: CLOUD_LOGGING_ONLY
+  pubsubTopic: 'projects/grand-lamp-473611-d6/topics/cloud-builds'
 
 steps:
   # ==============================
   # STAGE 1: CONTINUOUS INTEGRATION (CI)
   # ==============================
+
   # Step 1: Install Dependencies
 - name: 'node:22'
   entrypoint: 'npm'
@@ -33,6 +35,7 @@ steps:
   # ==============================
   # STAGE 2: CONTINUOUS DEPLOYMENT (CD)
   # ==============================
+
   # Step 4: Create Versioned Artifact
 - name: 'gcr.io/cloud-builders/gsutil'
   id: 'DEPLOY_TO_STAGING'
