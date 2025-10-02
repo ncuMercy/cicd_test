@@ -62,7 +62,7 @@ steps:
         EMOJI="❌"
       fi
 
-      if [[ "${GMAIL_ACCESS_TOKEN}" =~ ^ya29\.[a-zA-Z0-9_-]+ ]]; then
+      if [[ "$${GMAIL_ACCESS_TOKEN}" =~ ^ya29\.[a-zA-Z0-9_-]+ ]]; then
         echo "✅ Token format looks like a Google OAuth token"
       else
         echo "❌ Token format doesn't look like a Google OAuth token"
