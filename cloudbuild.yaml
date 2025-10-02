@@ -90,7 +90,7 @@ steps:
         -d "{\"raw\": \"$$ENCODED_EMAIL\"}"
       
       echo "E2E test results notification sent!"
-  waitFor: ['E2E_TESTS']
+  waitFor: ['DEPLOY_TO_STAGING']
   secretEnv: ['GMAIL_ACCESS_TOKEN']
 
   # Step 8: Deploy to Production
