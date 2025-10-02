@@ -87,7 +87,7 @@ steps:
         "https://gmail.googleapis.com/gmail/v1/users/me/messages/send" \
         -H "Authorization: Bearer $${GMAIL_ACCESS_TOKEN}" \
         -H "Content-Type: application/json" \
-        -d "{\"raw\": \"$ENCODED_EMAIL\"}"
+        -d "{\"raw\": \"$$ENCODED_EMAIL\"}"
       
       echo "E2E test results notification sent!"
   waitFor: ['E2E_TESTS']
