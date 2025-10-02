@@ -54,7 +54,6 @@ steps:
   args:
     - '-c'
     - |
-      # Check if E2E tests passed by looking for test results
       if [ -f "frontend/test-results.json" ] || [ -d "frontend/playwright-report" ]; then
         E2E_STATUS="PASSED"
         EMOJI="✅"
@@ -66,11 +65,11 @@ steps:
       # Create base64 encoded email
       EMAIL_CONTENT="From: ${_GMAIL_SENDER}
       To: ${_NOTIFICATION_EMAIL}
-      Subject: ${EMOJI} E2E Tests ${E2E_STATUS} - ${REPO_NAME}
+      Subject: $${EMOJI} E2E Tests $${E2E_STATUS} - ${REPO_NAME}
       Content-Type: text/html
 
-      <h2>${EMOJI} E2E Test Results - ${REPO_NAME}</h2>
-      <p><strong>Status:</strong> ${E2E_STATUS}</p>
+      <h2>$${EMOJI} E2E Test Results - ${REPO_NAME}</h2>
+      <p><strong>Status:</strong> $${E2E_STATUS}</p>
       <p><strong>Project:</strong> ${PROJECT_ID}</p>
       <p><strong>Build ID:</strong> ${BUILD_ID}</p>
       <p><strong>Repository:</strong> ${REPO_NAME}</p>
