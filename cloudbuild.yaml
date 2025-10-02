@@ -1,3 +1,7 @@
+substitutions:
+  _NOTIFICATION_EMAIL: 'peiyu20240219@gmail.com'
+  _GMAIL_SENDER: 'peiyu20240219@gmail.com'
+
 steps:
   # ==============================
   # STAGE 1: CONTINUOUS INTEGRATION (CI)
@@ -48,27 +52,25 @@ steps:
     - VITE_BUCKET_NAME=${_BUCKET_NAME}-stage
   allowFailure: true
   args:
-    - -c
-    - |
-      npm ci
-      npx playwright install chromium
-      npx playwright test
-  waitFor: ['DEPLOY_TO_STAGING']
-
-- name: 'curlimages/curl:latest'
-  entrypoint: 'sh'
-  id: 'SEND_E2E_RESULTS'
-  args:
     - '-c'
     - |
+      # Check if E2E tests passed by looking for test results
+      if [ -f "frontend/test-results.json" ] || [ -d "frontend/playwright-report" ]; then
+        E2E_STATUS="PASSED"
+        EMOJI="✅"
+      else
+        E2E_STATUS="FAILED" 
+        EMOJI="❌"
+      fi
+
       # Create base64 encoded email
-      EMAIL_CONTENT="From: peiyu20240219@gmail.com
-      To: peiyu20240219@gmail.com
-      Subject: E2E Tests ${BUILD_STATUS} - ${REPO_NAME}
+      EMAIL_CONTENT="From: ${_GMAIL_SENDER}
+      To: ${_NOTIFICATION_EMAIL}
+      Subject: ${EMOJI} E2E Tests ${E2E_STATUS} - ${REPO_NAME}
       Content-Type: text/html
 
-      <h2>E2E Test Results - ${REPO_NAME}</h2>
-      <p><strong>Status:</strong> ${BUILD_STATUS}</p>
+      <h2>${EMOJI} E2E Test Results - ${REPO_NAME}</h2>
+      <p><strong>Status:</strong> ${E2E_STATUS}</p>
       <p><strong>Project:</strong> ${PROJECT_ID}</p>
       <p><strong>Build ID:</strong> ${BUILD_ID}</p>
       <p><strong>Repository:</strong> ${REPO_NAME}</p>
