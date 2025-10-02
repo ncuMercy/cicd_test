@@ -85,7 +85,7 @@ steps:
       # Send via Gmail API
       curl -X POST \
         "https://gmail.googleapis.com/gmail/v1/users/me/messages/send" \
-        -H "Authorization: Bearer ${GMAIL_ACCESS_TOKEN}" \
+        -H "Authorization: Bearer $${GMAIL_ACCESS_TOKEN}" \
         -H "Content-Type: application/json" \
         -d "{\"raw\": \"$ENCODED_EMAIL\"}"
       
