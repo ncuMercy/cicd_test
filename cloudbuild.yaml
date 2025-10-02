@@ -55,34 +55,40 @@ steps:
       npx playwright test
   waitFor: ['DEPLOY_TO_STAGING']
 
-# Send email notification on build success or failure
 - name: 'curlimages/curl:latest'
-  id: 'SEND_GMAIL_NOTIFICATION'
-  waitFor: ['E2E_TESTS']
   entrypoint: 'sh'
+  id: 'SEND_E2E_RESULTS'
   args:
     - '-c'
     - |
+      # Create base64 encoded email
       EMAIL_CONTENT="From: peiyu20240219@gmail.com
       To: peiyu20240219@gmail.com
-      Subject: Test - ${REPO_NAME}
+      Subject: E2E Tests ${BUILD_STATUS} - ${REPO_NAME}
       Content-Type: text/html
 
-      <h2>Test</h2>
+      <h2>E2E Test Results - ${REPO_NAME}</h2>
+      <p><strong>Status:</strong> ${BUILD_STATUS}</p>
       <p><strong>Project:</strong> ${PROJECT_ID}</p>
       <p><strong>Build ID:</strong> ${BUILD_ID}</p>
       <p><strong>Repository:</strong> ${REPO_NAME}</p>
-      <p><a href='https://console.cloud.google.com/cloud-build/builds/${BUILD_ID}?project=${PROJECT_ID}'>View Test Result</a></p>"
+      <p><strong>Branch:</strong> ${BRANCH_NAME}</p>
+      <p><strong>Commit:</strong> ${COMMIT_SHA:0:8}</p>
+      <p><a href='https://console.cloud.google.com/cloud-build/builds/${BUILD_ID}?project=${PROJECT_ID}'>View Build Logs</a></p>
+      <p><a href='https://storage.googleapis.com/${_BUCKET_NAME}-stage/index.html'>View Staging Site</a></p>"
 
-      ENCODED_EMAIL=$(echo "$EMAIL_CONTENT" | base64 -w 0 | tr '/+' '_-' | tr -d '=')
+      # Encode the email in base64 URL-safe format
+      ENCODED_EMAIL=$(echo -n "$EMAIL_CONTENT" | base64 -w 0 | tr '/+' '_-' | tr -d '=')
 
+      # Send via Gmail API
       curl -X POST \
         "https://gmail.googleapis.com/gmail/v1/users/me/messages/send" \
-        -H "Authorization: Bearer $$GMAIL_ACCESS_TOKEN" \
+        -H "Authorization: Bearer ${GMAIL_ACCESS_TOKEN}" \
         -H "Content-Type: application/json" \
         -d "{\"raw\": \"$ENCODED_EMAIL\"}"
-        
-      echo "Gmail API notification sent with status"
+      
+      echo "E2E test results notification sent!"
+  waitFor: ['E2E_TESTS']
   secretEnv: ['GMAIL_ACCESS_TOKEN']
 
   # Step 8: Deploy to Production
