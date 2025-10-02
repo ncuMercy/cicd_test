@@ -70,7 +70,7 @@ steps:
       if [ -f "test-results.json" ]; then
         # Check if any tests failed in the JSON results
         FAILED_COUNT=$(jq '[.suites[].specs[].tests[].results[] | select(.status=="failed")] | length' test-results.json)
-        if [ "$FAILED_COUNT" -eq 0 ]; then
+        if [ "$$FAILED_COUNT" -eq 0 ]; then
           E2E_STATUS="PASSED"
           EMOJI="✅"
         else
@@ -88,7 +88,7 @@ steps:
         PASSED_TESTS=0
         FAILED_COUNT=0
       fi
-      
+
       EMAIL_CONTENT=$(cat <<EOF
       From: ${_GMAIL_SENDER}
       To: ${_NOTIFICATION_EMAIL}
