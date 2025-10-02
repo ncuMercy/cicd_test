@@ -98,7 +98,7 @@ steps:
   id: 'DEPLOY_TO_PRODUCTION'
   dir: 'frontend'
   args: ['rsync', '-r', './dist', 'gs://${_BUCKET_NAME}-production']
-  waitFor: ['E2E_TESTS']
+  waitFor: ['DEPLOY_TO_STAGING']
 
 timeout: '600s'
 
