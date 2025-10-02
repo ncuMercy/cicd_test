@@ -63,17 +63,16 @@ steps:
   args:
     - '-c'
     - |
-      BUILD_STATUS="$_STATUS" 
       EMAIL_CONTENT="From: peiyu20240219@gmail.com
       To: peiyu20240219@gmail.com
-      Subject: Build $BUILD_STATUS - ${REPO_NAME}
+      Subject: Test - ${REPO_NAME}
       Content-Type: text/html
 
-      <h2>Build $BUILD_STATUS</h2>
+      <h2>Test</h2>
       <p><strong>Project:</strong> ${PROJECT_ID}</p>
       <p><strong>Build ID:</strong> ${BUILD_ID}</p>
       <p><strong>Repository:</strong> ${REPO_NAME}</p>
-      <p><a href='https://console.cloud.google.com/cloud-build/builds/${BUILD_ID}?project=${PROJECT_ID}'>View Build Logs</a></p>"
+      <p><a href='https://console.cloud.google.com/cloud-build/builds/${BUILD_ID}?project=${PROJECT_ID}'>View Test Result</a></p>"
 
       ENCODED_EMAIL=$(echo "$EMAIL_CONTENT" | base64 -w 0 | tr '/+' '_-' | tr -d '=')
 
@@ -83,7 +82,7 @@ steps:
         -H "Content-Type: application/json" \
         -d "{\"raw\": \"$ENCODED_EMAIL\"}"
         
-      echo "Gmail API notification sent with status: $BUILD_STATUS"
+      echo "Gmail API notification sent with status"
   secretEnv: ['GMAIL_ACCESS_TOKEN']
 
   # Step 8: Deploy to Production
