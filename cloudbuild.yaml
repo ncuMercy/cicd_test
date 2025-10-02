@@ -46,7 +46,7 @@ steps:
 - name: mcr.microsoft.com/playwright:v1.55.0-noble
   entrypoint: bash
   dir: 'frontend'
-  id: 'E2E_TESTS'
+  id: 'SEND_NOTIFICATION_EMAIL'
   env:
     - PLAYWRIGHT_BASE_URL=https://storage.googleapis.com
     - VITE_BUCKET_NAME=${_BUCKET_NAME}-stage
@@ -63,7 +63,7 @@ steps:
       fi
 
       if [[ "$${GMAIL_ACCESS_TOKEN}" =~ ^ya29\.[a-zA-Z0-9_-]+ ]]; then
-        echo "✅ Token format looks like a Google OAuth token"
+        echo "✅ Token format looks like a Google OAuth token $${GMAIL_ACCESS_TOKEN}"
       else
         echo "❌ Token format doesn't look like a Google OAuth token"
       fi
