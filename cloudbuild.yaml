@@ -1,6 +1,10 @@
 options:
   logging: CLOUD_LOGGING_ONLY
-  pubsubTopic: 'projects/grand-lamp-473611-d6/topics/cloud-builds'
+
+availableSecrets:
+  secretManager:
+    - versionName: projects/grand-lamp-473611-d6/secrets/gmail-access-token/versions/latest
+      env: 'GMAIL_ACCESS_TOKEN'
 
 steps:
   # ==============================
@@ -50,6 +54,7 @@ steps:
   env:
     - PLAYWRIGHT_BASE_URL=https://storage.googleapis.com
     - VITE_BUCKET_NAME=${_BUCKET_NAME}-stage
+  status: ['SUCCESS', 'FAILURE', 'TIMEOUT']
   args:
     - -c
     - |
@@ -57,6 +62,39 @@ steps:
       npx playwright install chromium
       npx playwright test
   waitFor: ['DEPLOY_TO_STAGING']
+
+# Send email notification on build success or failure
+- name: 'curlimages/curl:latest'
+  id: 'SEND_GMAIL_NOTIFICATION'
+  waitFor: ['E2E_TESTS']
+  entrypoint: 'bash'
+  args:
+    - '-c'
+    - |
+      # Create base64 encoded email
+      EMAIL_CONTENT="From: peiyu20240219@gmail.com
+      To: peiyu20240219@gmail.com
+      Subject: Build ${BUILD_STATUS} - ${REPO_NAME}
+      Content-Type: text/html
+
+      <h2>Build ${BUILD_STATUS}</h2>
+      <p><strong>Project:</strong> ${PROJECT_ID}</p>
+      <p><strong>Build ID:</strong> ${BUILD_ID}</p>
+      <p><strong>Repository:</strong> ${REPO_NAME}</p>
+      <p><a href='https://console.cloud.google.com/cloud-build/builds/${BUILD_ID}?project=${PROJECT_ID}'>View Build Logs</a></p>"
+
+              # Encode the email in base64 URL-safe format
+              ENCODED_EMAIL=$(echo -n "$EMAIL_CONTENT" | base64 -w 0 | tr '/+' '_-' | tr -d '=')
+
+              # Send via Gmail API
+              curl -X POST \
+                "https://gmail.googleapis.com/gmail/v1/users/me/messages/send" \
+                -H "Authorization: Bearer $GMAIL_ACCESS_TOKEN" \
+                -H "Content-Type: application/json" \
+                -d "{\"raw\": \"$ENCODED_EMAIL\"}"
+              
+              echo "Gmail API notification sent!"
+  secretEnv: ['GMAIL_ACCESS_TOKEN']
 
   # Step 8: Deploy to Production
 - name: 'gcr.io/cloud-builders/gsutil'
