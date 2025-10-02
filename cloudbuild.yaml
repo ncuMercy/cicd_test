@@ -102,4 +102,4 @@ options:
 availableSecrets:
   secretManager:
   - versionName: projects/174997059597/secrets/GMAIL_ACCESS_TOKEN/versions/latest
-    secretEnv: 'GMAIL_ACCESS_TOKEN'
+    env: 'GMAIL_ACCESS_TOKEN'
