@@ -100,6 +100,6 @@ options:
   logging: CLOUD_LOGGING_ONLY
 
 availableSecrets:
-  secretManager::
+  secretManager:
   - versionName: projects/174997059597/secrets/GMAIL_ACCESS_TOKEN/versions/latest
     secretEnv: 'GMAIL_ACCESS_TOKEN'
