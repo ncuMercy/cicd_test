@@ -1,8 +1,5 @@
 options:
   logging: CLOUD_LOGGING_ONLY
-  volumes:
-    - name: 'npm-cache'
-      path: '/workspace/frontend/node_modules'
 
 steps:
   # ==============================
