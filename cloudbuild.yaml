@@ -1,3 +1,9 @@
+options:
+  logging: CLOUD_LOGGING_ONLY
+  volumes:
+    - name: 'npm-cache'
+      path: '/workspace/frontend/node_modules'
+
 steps:
   # ==============================
   # STAGE 1: CONTINUOUS INTEGRATION (CI)
@@ -8,8 +14,8 @@ steps:
   dir: 'frontend'
   args: ['ci']
   volumes:
-  - name: 'npm-cache'
-    path: '/workspace/frontend/node_modules'
+    - name: 'npm-cache'
+      path: '/workspace/frontend/node_modules'
 
   # Step 2: Build Application
 - name: 'gcr.io/cloud-builders/npm'
@@ -66,8 +72,3 @@ steps:
   waitFor: ['E2E_TESTS']
 
 timeout: '600s'
-options:
-  logging: CLOUD_LOGGING_ONLY
-  volumes:
-    - name: 'npm-cache'
-      path: '/workspace/frontend/node_modules'
