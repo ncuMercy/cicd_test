@@ -64,6 +64,7 @@ steps:
 
       # Create base64 encoded email
       EMAIL_CONTENT="From: ${_GMAIL_SENDER}
+
       To: ${_NOTIFICATION_EMAIL}
       Subject: $${EMOJI} E2E Tests $${E2E_STATUS} - ${REPO_NAME}
       Content-Type: text/html
@@ -79,7 +80,7 @@ steps:
       <p><a href='https://storage.googleapis.com/${_BUCKET_NAME}-stage/index.html'>View Staging Site</a></p>"
 
       # Encode the email in base64 URL-safe format
-      ENCODED_EMAIL=$(echo -n "$EMAIL_CONTENT" | base64 -w 0 | tr '/+' '_-' | tr -d '=')
+      ENCODED_EMAIL=$(echo -n "$$EMAIL_CONTENT" | base64 -w 0 | tr '/+' '_-' | tr -d '=')
 
       # Send via Gmail API
       curl -X POST \
