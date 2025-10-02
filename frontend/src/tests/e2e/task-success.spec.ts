@@ -3,7 +3,6 @@ import { test, expect } from '@playwright/test';
 const BUCKET_NAME = process.env.VITE_BUCKET_NAME || 'error';
 const BASE_URL = process.env.PLAYWRIGHT_BASE_URL ? `/${BUCKET_NAME}/index.html` : 'http://localhost:3000';
 
-console.log('======== RUNNING IN URL: =========', `${process.env.PLAYWRIGHT_BASE_URL}${BASE_URL}`, '======== RUNNING IN URL: =========');
 test.beforeEach(async ({ page }) => {
   await page.goto(BASE_URL);
   await page.evaluate(() => localStorage.clear());
@@ -11,7 +10,6 @@ test.beforeEach(async ({ page }) => {
 });
 
 test.describe('Task Manager E2E Tests', () => {
-
   test('Test Case 1: Create a new task and verify it appears in the list', async ({ page }) => {
     // Verify initial state shows no tasks
     await expect(page.getByTestId('no-tasks-message')).toBeVisible();

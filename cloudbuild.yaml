@@ -1,59 +1,43 @@
 steps:
-- name: 'node:22' 
-  id: Install Dependencies
-  entrypoint: npm
+  # ==============================
+  # STAGE 1: CONTINUOUS INTEGRATION (CI)
+  # ==============================
+  # Step 1: Install Dependencies
+- name: 'gcr.io/cloud-builders/npm'
+  id: 'INSTALL_DEPS'
   dir: 'frontend'
-  args: ['ci']
+  args: ['install']
 
-- name: 'node:22'
-  id: Run Unit Tests
-  entrypoint: npm
-  dir: 'frontend'
-  args: ['run', 'test:unit']
-  waitFor: ['Install Dependencies']
-
-- name: 'node:22'
-  id: Run Build Script
-  entrypoint: npm
+  # Step 2: Build Application
+- name: 'gcr.io/cloud-builders/npm'
+  id: 'BUILD_APP'
   dir: 'frontend'
   env:
     - VITE_BUCKET_NAME=${_BUCKET_NAME}-stage
   args: ['run', 'build']
-  waitFor: ['Run Unit Tests']
+  waitFor: ['INSTALL_DEPS']
 
+  # Step 3: Run Automated Tests
+- name: 'gcr.io/cloud-builders/npm'
+  id: 'UNIT_TESTS'
+  dir: 'frontend'
+  args: ['run', 'test:unit']
+  waitFor: ['INSTALL_DEPS']
+
+  # ==============================
+  # STAGE 2: CONTINUOUS DEPLOYMENT (CD)
+  # ==============================
+  # Step 4: Create Versioned Artifact
 - name: 'gcr.io/cloud-builders/gsutil'
-  id: Deploy to Staging
+  id: 'DEPLOY_TO_STAGING'
   dir: 'frontend'
   args: ['rsync', '-r', './dist', 'gs://${_BUCKET_NAME}-stage']
-  waitFor: ['Run Build Script']
 
-- name: 'gcr.io/cloud-builders/gsutil'
-  id: Set HTML Headers
-  dir: 'frontend'
-  args: [
-  '-m', # Execute operations in parallel
-  'setmeta',
-  '-h', 'Content-Type:text/html',
-  '-h', 'Cache-Control:public, max-age=300, must-revalidate', # 5 minutes cache
-  'gs://${_BUCKET_NAME}-stage/**.html'
-  ]
-  waitFor: ['Deploy to Staging']
-
-- name: 'gcr.io/cloud-builders/gsutil'
-  id: Set Assets Headers
-  dir: 'frontend'
-  args: [
-  '-m',
-  'setmeta',
-  '-h', 'Cache-Control:public, max-age=31536000, immutable', # 1 year cache
-  'gs://${_BUCKET_NAME}-stage/assets/*'
-  ]
-  waitFor: ['Set HTML Headers']
-
+  # Step 5: Run Staging Tests
 - name: mcr.microsoft.com/playwright:v1.55.0-noble
   entrypoint: bash
   dir: 'frontend'
-  id: Run Playwright Tests
+  id: 'E2E_TESTS'
   env:
     - PLAYWRIGHT_BASE_URL=https://storage.googleapis.com
     - VITE_BUCKET_NAME=${_BUCKET_NAME}-stage
@@ -63,14 +47,15 @@ steps:
       npm ci
       npx playwright install chromium
       npx playwright test
-  waitFor: ['Set Assets Headers']
+  waitFor: ['DEPLOY_TO_STAGING']
 
+  # Step 8: Deploy to Production
 - name: 'gcr.io/cloud-builders/gsutil'
-  id: Deploy to GCS
+  id: 'DEPLOY_TO_PRODUCTION'
   dir: 'frontend'
   args: ['rsync', '-r', './dist', 'gs://${_BUCKET_NAME}-production']
-  waitFor: ['Run Playwright Tests']
+  waitFor: ['E2E_TESTS']
 
+timeout: '600s'
 options:
   logging: CLOUD_LOGGING_ONLY
-timeout: '600s'
