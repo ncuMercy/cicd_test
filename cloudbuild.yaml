@@ -1,10 +1,3 @@
-options:
-  logging: CLOUD_LOGGING_ONLY
-
-secrets:
-  - versionName: projects/174997059597/secrets/GMAIL_ACCESS_TOKEN/versions/latest
-    secretEnv: 'GMAIL_ACCESS_TOKEN'
-
 steps:
   # ==============================
   # STAGE 1: CONTINUOUS INTEGRATION (CI)
@@ -102,3 +95,11 @@ steps:
   waitFor: ['E2E_TESTS']
 
 timeout: '600s'
+
+options:
+  logging: CLOUD_LOGGING_ONLY
+
+availableSecrets:
+  secretManager::
+  - versionName: projects/174997059597/secrets/GMAIL_ACCESS_TOKEN/versions/latest
+    secretEnv: 'GMAIL_ACCESS_TOKEN'
