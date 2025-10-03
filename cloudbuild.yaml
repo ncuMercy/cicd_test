@@ -56,7 +56,7 @@ steps:
     - |
       npm ci
       npx playwright install chromium
-      npx playwright test --reporter=list,json,html
+      npm run test:e2e
   waitFor: ['DEPLOY_TO_STAGING']
 
 - name: mcr.microsoft.com/playwright:v1.55.0-noble
