@@ -67,7 +67,7 @@ steps:
   args:
     - '-c'
     - |
-      apk update && apk add jq
+      apt-get update && apt-get install -y jq;
       
       REPORT_FILE="playwright-report/test-results.json";
 
