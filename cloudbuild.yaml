@@ -59,7 +59,7 @@ steps:
       npm run test:e2e
   waitFor: ['DEPLOY_TO_STAGING']
 
-- name: mcr.microsoft.com/playwright:v1.55.0-noble
+- name: alpine/git
   entrypoint: bash
   dir: 'frontend'
   id: 'SEND_NOTIFICATION_EMAIL'
@@ -67,7 +67,11 @@ steps:
   args:
     - '-c'
     - |
-      if [ -f "playwright-report/test-results.json" ]; then
+      apk update && apk add jq
+      
+      REPORT_FILE="playwright-report/test-results.json";
+
+      if [ -f "$$REPORT_FILE" ]; then
         FAILED_COUNT=$(jq '[.suites[].specs[].tests[].results[] | select(.status=="failed")] | length' test-results.json)
         if [ "$$FAILED_COUNT" -eq 0 ]; then
           E2E_STATUS="PASSED"
