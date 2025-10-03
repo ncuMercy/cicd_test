@@ -67,7 +67,7 @@ steps:
   args:
     - '-c'
     - |
-      if [ -f "test-results.json" ]; then
+      if [ -f "playwright-report/test-results.json" ]; then
         FAILED_COUNT=$(jq '[.suites[].specs[].tests[].results[] | select(.status=="failed")] | length' test-results.json)
         if [ "$$FAILED_COUNT" -eq 0 ]; then
           E2E_STATUS="PASSED"
