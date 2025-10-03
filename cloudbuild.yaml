@@ -72,7 +72,7 @@ steps:
       REPORT_FILE="playwright-report/test-results.json";
 
       if [ -f "$$REPORT_FILE" ]; then
-        FAILED_COUNT=$(jq '[.suites[].specs[].tests[].results[] | select(.status=="failed")] | length' $$REPORT_FILE)
+        FAILED_COUNT=$(jq '[.suites[].suites[].specs[].tests[].results[] | select(.status=="failed")] | length' "$$REPORT_FILE")
         if [ "$$FAILED_COUNT" -eq 0 ]; then
           E2E_STATUS="PASSED"
           EMOJI="✅"
@@ -81,8 +81,8 @@ steps:
           EMOJI="❌"
         fi
         
-        TOTAL_TESTS=$(jq '.suites[].specs[] | length' $$REPORT_FILE | awk '{sum+=$1} END {print sum}')
-        PASSED_TESTS=$(jq '[.suites[].specs[].tests[].results[] | select(.status=="passed")] | length' $$REPORT_FILE)
+        TOTAL_TESTS=$(jq '[.suites[].suites[].specs[].tests[]] | length' "$$REPORT_FILE")
+        PASSED_TESTS=$(jq '[.suites[].suites[].specs[].tests[].results[] | select(.status=="passed")] | length' "$$REPORT_FILE")
         echo "---- LOG FOR DEBUGGING PURPOSE ----"
         echo "Failed tests count: $$FAILED_COUNT"
         echo "Total tests: $$TOTAL_TESTS"
