@@ -59,7 +59,7 @@ steps:
       npm run test:e2e
   waitFor: ['DEPLOY_TO_STAGING']
 
-- name: alpine/git
+- name: node:22
   entrypoint: bash
   dir: 'frontend'
   id: 'SEND_NOTIFICATION_EMAIL'
