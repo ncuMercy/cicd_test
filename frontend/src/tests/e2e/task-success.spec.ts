@@ -1,7 +1,7 @@
 import { test, expect } from '@playwright/test';
 
 const BUCKET_NAME = process.env.VITE_BUCKET_NAME || 'error';
-const BASE_URL = process.env.PLAYWRIGHT_BASE_URL ? `/${BUCKET_NAME}/index.html` : 'http://localhost:3000';
+const BASE_URL = process.env.PLAYWRIGHT_BASE_URL ? `/${BUCKET_NAME}/index.html` : '/';
 
 test.beforeEach(async ({ page }) => {
   await page.goto(BASE_URL);
