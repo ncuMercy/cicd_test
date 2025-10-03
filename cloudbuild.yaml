@@ -79,6 +79,11 @@ steps:
         
         TOTAL_TESTS=$(jq '.suites[].specs[] | length' test-results.json | awk '{sum+=$1} END {print sum}')
         PASSED_TESTS=$(jq '[.suites[].specs[].tests[].results[] | select(.status=="passed")] | length' test-results.json)
+        echo "---- LOG FOR DEBUGGING PURPOSE ----"
+        echo "Failed tests count: $$FAILED_COUNT"
+        echo "Total tests: $$TOTAL_TESTS"
+        echo "Passed tests: $$PASSED_TESTS"
+        echo "---- LOG FOR DEBUGGING PURPOSE ----"
       else
         E2E_STATUS="FAILED"
         EMOJI="❌"
