@@ -133,7 +133,7 @@ steps:
   secretEnv: ['GMAIL_ACCESS_TOKEN']
 
   # Step 8: Deploy to Production
-- name: 'gcr.io/cloud-builders/gsutil'
+- name: 'gcr.io/cloud-builders/bash'
   id: 'DEPLOY_TO_PRODUCTION'
   dir: 'frontend'
   args: 
