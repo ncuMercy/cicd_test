@@ -133,9 +133,10 @@ steps:
   secretEnv: ['GMAIL_ACCESS_TOKEN']
 
   # Step 8: Deploy to Production
-- name: 'gcr.io/cloud-builders/bash'
+- name: 'gcr.io/google.com/cloudsdktool/cloud-sdk'
   id: 'DEPLOY_TO_PRODUCTION'
   dir: 'frontend'
+  entrypoint: 'bash'
   args: 
     - '-c'
     - |
