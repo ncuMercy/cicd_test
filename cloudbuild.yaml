@@ -29,6 +29,7 @@ steps:
   entrypoint: 'npm'
   id: 'UNIT_TESTS'
   dir: 'frontend'
+  allowFailure: true
   args: ['run', 'test:unit']
   waitFor: ['INSTALL_DEPS']
 
@@ -63,22 +64,24 @@ steps:
   entrypoint: bash
   dir: 'frontend'
   id: 'SEND_NOTIFICATION_EMAIL'
-  allowFailure: true
   args:
     - '-c'
     - |
       apt-get update && apt-get install -y jq;
       
       REPORT_FILE="playwright-report/test-results.json";
+      TEST_STATUS_FILE="playwright-report/.test_status"
 
       if [ -f "$$REPORT_FILE" ]; then
         FAILED_COUNT=$(jq '[.suites[].suites[].specs[].tests[].results[] | select(.status=="failed")] | length' "$$REPORT_FILE")
         if [ "$$FAILED_COUNT" -eq 0 ]; then
           E2E_STATUS="PASSED"
           EMOJI="✅"
+          echo "PASSED" > $$TEST_STATUS_FILE
         else
           E2E_STATUS="FAILED"
           EMOJI="❌"
+          echo "FAILED" > $$TEST_STATUS_FILE
         fi
         
         TOTAL_TESTS=$(jq '[.suites[].suites[].specs[].tests[]] | length' "$$REPORT_FILE")
@@ -94,19 +97,19 @@ steps:
         TOTAL_TESTS=0
         PASSED_TESTS=0
         FAILED_COUNT=0
+        echo "FAILED" > $$TEST_STATUS_FILE
         echo "❌❌❌ Test results file not found! ❌❌❌"
       fi
 
       EMAIL_CONTENT=$(cat <<EOF
       From: ${_GMAIL_SENDER}
       To: ${_NOTIFICATION_EMAIL}
-      Subject: $${EMOJI} E2E Tests $${E2E_STATUS} - ${REPO_NAME}
+      Subject: E2E Tests $${E2E_STATUS} - Repository: ${REPO_NAME}
       MIME-Version: 1.0
       Content-Type: text/html; charset="UTF-8"
 
-      <h2>$${EMOJI} E2E Test Results - ${REPO_NAME}</h2>
+      <h2>$${EMOJI} E2E Test Results - Repository: ${REPO_NAME}</h2>
       <p><strong>Status:</strong> $${E2E_STATUS}</p>
-      <p><strong>Project:</strong> ${PROJECT_ID}</p>
       <p><strong>Build ID:</strong> ${BUILD_ID}</p>
       <p><strong>Repository:</strong> ${REPO_NAME}</p>
       <p><strong>Branch:</strong> ${BRANCH_NAME}</p>
@@ -133,8 +136,20 @@ steps:
 - name: 'gcr.io/cloud-builders/gsutil'
   id: 'DEPLOY_TO_PRODUCTION'
   dir: 'frontend'
-  args: ['rsync', '-r', './dist', 'gs://${_BUCKET_NAME}-production']
-  waitFor: ['DEPLOY_TO_STAGING']
+  args: 
+    - '-c'
+    - |
+      TEST_STATUS_FILE="playwright-report/.test_status"
+      
+      if [ -f "$$TEST_STATUS_FILE" ] && [ "$(cat $$TEST_STATUS_FILE)" = "PASSED" ]; then
+        echo "✅ Tests passed - deploying to production..."
+        gsutil rsync -r ./dist gs://${_BUCKET_NAME}-production
+        echo "✅ Successfully deployed to production"
+      else
+        echo "❌ Tests failed or status unknown - skipping production deployment"
+        exit 0
+      fi
+  waitFor: ['BUILD_APP', 'DEPLOY_TO_STAGING', 'SEND_NOTIFICATION_EMAIL']
 
 timeout: '600s'
 
