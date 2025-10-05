@@ -45,7 +45,7 @@ const TaskManagementApp: React.FC = () => {
         </div>
 
         {/* Statistics */}
-        <TaskStats taskService={taskService} />
+        <TaskStats taskService={taskService} tasks={tasks} />
 
         {/* Controls */}
         <div className="bg-white rounded-xl p-6 mb-6 shadow-sm border">

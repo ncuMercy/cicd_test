@@ -1,12 +1,14 @@
 import React, { useState, useEffect } from 'react';
 import { CheckCircle, Circle, BarChart3 } from 'lucide-react';
 import { TaskService } from '@/application/services/task-service';
+import type { Task } from "@/domain/entities/task";
 
 interface TaskStatsProps {
   taskService: TaskService;
+  tasks: Task[];
 }
 
-export const TaskStats: React.FC<TaskStatsProps> = ({ taskService }) => {
+export const TaskStats: React.FC<TaskStatsProps> = ({ taskService, tasks }) => {
   const [stats, setStats] = useState({ total: 0, completed: 0, inProgress: 0, todo: 0 });
 
   useEffect(() => {
@@ -15,7 +17,7 @@ export const TaskStats: React.FC<TaskStatsProps> = ({ taskService }) => {
       setStats(taskStats);
     };
     loadStats();
-  }, [taskService]);
+  }, [tasks]);
 
   return (
     <div className="grid grid-cols-2 lg:grid-cols-4 gap-4 mb-6">
