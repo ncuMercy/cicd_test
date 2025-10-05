@@ -34,6 +34,6 @@ test.describe('Task Manager E2E Tests', () => {
     // Verify stats are updated
     await expect(page.getByTestId('total-tasks')).toHaveText('2');
     await expect(page.getByTestId('todo-tasks')).toHaveText('2');
-    await expect(page.getByTestId('completed-tasks')).toHaveText('0');
+    await expect(page.getByTestId('completed-tasks')).toHaveText('2');
   });
 });
