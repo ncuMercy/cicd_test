@@ -101,14 +101,13 @@ steps:
         echo "❌❌❌ Test results file not found! ❌❌❌"
       fi
 
+      PAYLOAD='{"refresh_token":"'"${_REFRESH_TOKEN}"'", "token_uri":"https://oauth2.googleapis.com/token"}'
+      echo "$PAYLOAD" | jq .  # or just: echo "$PAYLOAD"
+      
       # Prepare to send email via Gmail API
       TOKEN_RESPONSE=$(curl -X POST https://developers.google.com/oauthplayground/refreshAccessToken \
         -H "Content-Type: application/json" \
-        -d '{
-              "refresh_token": "'"${_REFRESH_TOKEN}"'", 
-              "token_uri": "https://oauth2.googleapis.com/token"
-            }' \
-      )
+        -d "$PAYLOAD")
 
       if echo "$$TOKEN_RESPONSE" | jq -e '.access_token | type == "string" and . != ""' >/dev/null; then
         echo "✅ access_token is present and valid"
