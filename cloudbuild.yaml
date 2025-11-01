@@ -103,8 +103,10 @@ steps:
 
       PAYLOAD=$$(jq -n \
         --arg rt "${_REFRESH_TOKEN}" \
-        --arg uri "https://oauth2.googleapis.com/token   " \
+        --arg uri "https://oauth2.googleapis.com/token" \
         '{"refresh_token": $$rt, "token_uri": $$uri}')
+
+        
       echo "$$PAYLOAD" | jq .  # or just: echo "$$PAYLOAD"
 
       # Prepare to send email via Gmail API
