@@ -114,6 +114,7 @@ steps:
 
       echo "---- LOG FOR DEBUGGING PURPOSE ----"
       echo "Token response: $$TOKEN_RESPONSE"  
+      echo "Access Token: $$ACCESS_TOKEN"
       echo "---- LOG FOR DEBUGGING PURPOSE ----"
 
 
