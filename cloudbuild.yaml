@@ -110,16 +110,16 @@ steps:
             }' \
       )
 
-      if echo "$TOKEN_RESPONSE" | jq -e '.access_token | type == "string" and . != ""' >/dev/null; then
+      if echo "$$TOKEN_RESPONSE" | jq -e '.access_token | type == "string" and . != ""' >/dev/null; then
         echo "✅ access_token is present and valid"
-        ACCESS_TOKEN=$(echo "$TOKEN_RESPONSE" | jq -r '.access_token')
+        ACCESS_TOKEN=$(echo "$$TOKEN_RESPONSE" | jq -r '.access_token')
       else
         echo "❌ access_token missing, null, or empty"
-        echo "Response: $TOKEN_RESPONSE"
+        echo "Response: $$TOKEN_RESPONSE"
         exit 1
       fi
 
-      ACCESS_TOKEN=$(echo "$$TOKEN_RESPONSE" | jq -r '.access_token')
+      # ACCESS_TOKEN=$(echo "$$TOKEN_RESPONSE" | jq -r '.access_token')
 
       echo "---- LOG FOR DEBUGGING PURPOSE ----"
       echo "Token response: $$TOKEN_RESPONSE"  
