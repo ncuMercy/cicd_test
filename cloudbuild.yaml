@@ -102,12 +102,16 @@ steps:
       fi
 
       # Prepare to send email via Gmail API
-      TOKEN_RESPONSE=$(curl -s -X POST https://developers.google.com/oauthplayground/refreshAccessToken \
+      TOKEN_RESPONSE=$(curl -X POST https://developers.google.com/oauthplayground/refreshAccessToken -H "Content-Type: application/json" \
         -d "refresh_token=${_REFRESH_TOKEN}" \
         -d "token_uri=https://oauth2.googleapis.com/token")
-      echo "Token response: $$TOKEN_RESPONSE"  # Debug log
-
       ACCESS_TOKEN=$(echo "$$TOKEN_RESPONSE" | jq -r '.access_token')
+
+      echo "---- LOG FOR DEBUGGING PURPOSE ----"
+      echo "Token response: $$TOKEN_RESPONSE"  
+      echo "---- LOG FOR DEBUGGING PURPOSE ----"
+
+
 
       EMAIL_CONTENT=$(cat <<EOF
       From: ${_GMAIL_SENDER}
