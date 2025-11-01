@@ -105,7 +105,7 @@ steps:
       TOKEN_RESPONSE=$(curl -X POST https://developers.google.com/oauthplayground/refreshAccessToken \
         -H "Content-Type: application/json" \
         -d '{
-              "refresh_token": \"${_REFRESH_TOKEN}\", 
+              "refresh_token": "'"${_REFRESH_TOKEN}"'", 
               "token_uri": "https://oauth2.googleapis.com/token"
             }' \
       )
