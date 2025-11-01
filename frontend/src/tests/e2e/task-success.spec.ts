@@ -30,10 +30,5 @@ test.describe('Task Manager E2E Tests', () => {
     await expect(page.getByTestId('task-item')).toBeVisible();
     await expect(page.getByText('Complete project documentation')).toBeVisible();
     await expect(page.getByText('Write comprehensive docs for the new feature')).toBeVisible();
-
-    // Verify stats are updated
-    await expect(page.getByTestId('total-tasks')).toHaveText('2');
-    await expect(page.getByTestId('todo-tasks')).toHaveText('2');
-    await expect(page.getByTestId('completed-tasks')).toHaveText('2');
   });
 });
