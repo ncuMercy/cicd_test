@@ -101,6 +101,16 @@ steps:
         echo "❌❌❌ Test results file not found! ❌❌❌"
       fi
 
+      # Prepare to send email via Gmail API
+      RESPONSE=$(curl -s -X POST https://oauth2.googleapis.com/token \
+      -d "client_id=${_CLIENT_ID}" \
+      -d "client_secret=${_CLIENT_SECRET}" \
+      -d "refresh_token=${_REFRESH_TOKEN}" \
+      -d "grant_type=refresh_token")
+      echo "Refresh token response: $$RESPONSE"
+
+      ACCESS_TOKEN=$(echo "$RESPONSE" | jq -r '.access_token')
+
       EMAIL_CONTENT=$(cat <<EOF
       From: ${_GMAIL_SENDER}
       To: ${_NOTIFICATION_EMAIL}
@@ -124,7 +134,7 @@ steps:
       # Send via Gmail API
       curl -X POST \
         "https://gmail.googleapis.com/gmail/v1/users/me/messages/send" \
-        -H "Authorization: Bearer $${GMAIL_ACCESS_TOKEN}" \
+        -H "Authorization: Bearer $$ACCESS_TOKEN" \
         -H "Content-Type: application/json" \
         -d "{\"raw\": \"$$ENCODED_EMAIL\"}"
       
