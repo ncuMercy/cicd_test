@@ -123,15 +123,6 @@ steps:
         exit 1
       fi
 
-      # ACCESS_TOKEN=$(echo "$$TOKEN_RESPONSE" | jq -r '.access_token')
-
-      echo "---- LOG FOR DEBUGGING PURPOSE ----"
-      echo "Token response: $$TOKEN_RESPONSE"  
-      echo "Access Token: $$ACCESS_TOKEN"
-      echo "---- LOG FOR DEBUGGING PURPOSE ----"
-
-
-
       EMAIL_CONTENT=$(cat <<EOF
       From: ${_GMAIL_SENDER}
       To: ${_NOTIFICATION_EMAIL}
