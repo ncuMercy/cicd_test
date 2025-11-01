@@ -101,7 +101,7 @@ steps:
         echo "❌❌❌ Test results file not found! ❌❌❌"
       fi
 
-      PAYLOAD='{"refresh_token":"'"${_REFRESH_TOKEN}"'", "token_uri":"https://oauth2.googleapis.com/token"}'
+      PAYLOAD='{"refresh_token": ${_REFRESH_TOKEN}, "token_uri":"https://oauth2.googleapis.com/token"}'
       echo "$$PAYLOAD" | jq .  # or just: echo "$$PAYLOAD"
 
       # Prepare to send email via Gmail API
