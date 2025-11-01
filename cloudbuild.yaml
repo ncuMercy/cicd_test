@@ -107,7 +107,8 @@ steps:
         -d "client_secret=${_CLIENT_SECRET}" \
         -d "refresh_token=${_REFRESH_TOKEN}" \
         -d "grant_type=refresh_token")
-
+      echo "Token response: $$TOKEN_RESPONSE"  # Debug log
+      
       ACCESS_TOKEN=$(echo "$$TOKEN_RESPONSE" | jq -r '.access_token')
 
       EMAIL_CONTENT=$(cat <<EOF
